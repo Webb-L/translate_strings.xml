@@ -80,7 +80,7 @@ func main() {
 				continue
 			}
 			if data != "" {
-				value.Text = data
+				value.Text = fixErrorFormat(data)
 			}
 
 			fmt.Printf("\r正在翻译第\033[1;00;31m[%d\033[0m\\\033[1;00;32m%d]\033[0m条数据。", lineCount+index+1, len(resource.Strings))
@@ -97,5 +97,4 @@ func main() {
 		newStringsFile.WriteString("\n</resources>")
 		fmt.Printf("\n翻译完成%s。\n", newFileName)
 	}
-
 }

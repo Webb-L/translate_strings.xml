@@ -10,6 +10,8 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"regexp"
+	"strings"
 )
 
 type TranslateResult struct {
@@ -84,4 +86,20 @@ func stringToMD5(text string) string {
 	hash.Reset()
 	hash.Write([]byte(text))
 	return hex.EncodeToString(hash.Sum(nil))
+}
+
+/*
+修复格式错误的数据
+比如：
+
+1.<! [CDATA [
+2.% 1 $d % 2 $s
+*/
+func fixErrorFormat(data string) string {
+	text := strings.ReplaceAll(data, "<! [CDATA [", "<![CDATA[")
+	matchString, _ := regexp.Compile("% \\d+ \\$[a-z]")
+	for _, errorText := range matchString.FindAllString(text, -1) {
+		text = strings.ReplaceAll(text, errorText, strings.ReplaceAll(errorText, " ", ""))
+	}
+	return text
 }
